@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using GalaxyWeb.Data;
+using GalaxyWeb.Tools;
 
 namespace GalaxyWeb
 {
@@ -30,6 +31,7 @@ namespace GalaxyWeb
             services.AddControllers();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddScoped<IServiceHandler, ServiceHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

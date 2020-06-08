@@ -14,20 +14,25 @@ namespace GalaxyWeb.Controllers
     public class ServiceController : ControllerBase
     {
         private ILogger<ServiceHandler> logger;
-        public ServiceController(ILogger<ServiceHandler> logger)
+        private IServiceHandler handler;
+
+        public ServiceController(ILogger<ServiceHandler> logger, IServiceHandler handler)
         {
             this.logger = logger;
+            this.handler = handler;
         }
 
         [HttpGet]
-        public string PeekService()
+        public async Task<string> PeekService()
         {
             string serviceName = "VizConfigHub";
+            handler.ServiceName = serviceName;
+            await handler.ServiceControlAsync(Enums.TargetServiceState.StartService); //, System.ServiceProcess.ServiceStartMode.Automatic
 
-            ServiceHandler handler = new ServiceHandler(serviceName, logger); //
-            var state = handler.ServiceState;
+            var state = await handler.GetStatus();
 
             string response = $"Service {serviceName} is currently in state {state.ToString()}";
+            logger.LogInformation(response);
 
             return response;
         }

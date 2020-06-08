@@ -1,0 +1,60 @@
+﻿@page "/service"
+@inject IServiceHandler handler
+
+<h3>ServiceComponent</h3>
+
+<p>Start or stop service VizConfigHub:</p>
+
+<div class="row">
+    <div class="col-2">
+        <button class="btn btn-outline-primary" @onclick="StartService">Start</button>
+    </div>
+    <div class="col-2">
+        <button class="btn btn-outline-primary" @onclick="StopService">Stop</button>
+    </div>
+</div>
+
+<p>@counter - Service @ServiceName is currently in state: @ServiceState</p>
+
+@code {
+    //private string serviceName;
+    //private string serviceState;
+    private int counter = 0;
+
+    public string ServiceName { get; set; }
+    public string ServiceState { get; set; }
+
+    private async void StartService()
+    {
+        counter++;
+        await handler.ServiceControlAsync(Enums.TargetServiceState.StartService);
+        await GetServiceState();
+    }
+
+    private async void StopService()
+    {
+        counter++;
+        await handler.ServiceControlAsync(Enums.TargetServiceState.StopService);
+        await GetServiceState();
+    }
+
+    public ServiceComponent()
+    {
+        ServiceName = "VizConfigHub";
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        handler.ServiceName = ServiceName;
+        GetServiceState();
+    }
+
+    private async Task GetServiceState()
+    {
+        var state = await handler.GetStatus();
+        ServiceState = state.ToString();
+        this.StateHasChanged();
+        
+    }
+}
