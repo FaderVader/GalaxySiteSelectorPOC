@@ -17,8 +17,7 @@
 <p>@counter - Service @ServiceName is currently in state: @ServiceState</p>
 
 @code {
-    //private string serviceName;
-    //private string serviceState;
+
     private int counter = 0;
 
     public string ServiceName { get; set; }
@@ -27,14 +26,14 @@
     private async void StartService()
     {
         counter++;
-        await handler.ServiceControlAsync(Enums.TargetServiceState.StartService);
+        await handler.ServiceControlAsync(Enums.ServiceState.StartService);
         await GetServiceState();
     }
 
     private async void StopService()
     {
         counter++;
-        await handler.ServiceControlAsync(Enums.TargetServiceState.StopService);
+        await handler.ServiceControlAsync(Enums.ServiceState.StopService);
         await GetServiceState();
     }
 
@@ -43,11 +42,10 @@
         ServiceName = "VizConfigHub";
     }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
+    protected override async Task OnInitializedAsync()
+    {        
         handler.ServiceName = ServiceName;
-        GetServiceState();
+        await GetServiceState();
     }
 
     private async Task GetServiceState()
@@ -55,6 +53,6 @@
         var state = await handler.GetStatus();
         ServiceState = state.ToString();
         this.StateHasChanged();
-        
+
     }
 }

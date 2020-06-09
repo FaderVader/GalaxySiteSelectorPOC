@@ -12,11 +12,17 @@ namespace GalaxyWeb.Tools
 {
     public class ServiceHandler : IServiceHandler
     {
-        private TargetServiceState _processMode;
+        private ServiceState _processMode;
         private string _serviceName;
         private ServiceController serviceController;
         private ILogger logger;
         private bool handlerIsValid;
+
+        public ServiceHandler(ILogger<ServiceHandler> logger)
+        {
+            this.logger = logger;
+            handlerIsValid = false;
+        }
 
         public string ServiceName
         {
@@ -34,14 +40,9 @@ namespace GalaxyWeb.Tools
             }
         }
 
-        //public TargetServiceState ServiceState
-        //{
-        //    get { return GetStatus(); }
-        //}
-
-        public async Task<TargetServiceState> GetStatus()
+        public async Task<ServiceState> GetState()
         {
-            TargetServiceState status = TargetServiceState.NotFound;
+            ServiceState status = ServiceState.NotFound;
             if (!handlerIsValid) return status;
 
             try
@@ -51,19 +52,19 @@ namespace GalaxyWeb.Tools
                     switch (serviceController.Status)
                     {
                         case ServiceControllerStatus.Running:
-                            status = TargetServiceState.StartService;
+                            status = ServiceState.StartService;
                             break;
 
                         case ServiceControllerStatus.StartPending:
-                            status = TargetServiceState.StartService;
+                            status = ServiceState.StartService;
                             break;
 
                         case ServiceControllerStatus.Stopped:
-                            status = TargetServiceState.StopService;
+                            status = ServiceState.StopService;
                             break;
 
                         case ServiceControllerStatus.StopPending:
-                            status = TargetServiceState.StopService;
+                            status = ServiceState.StopService;
                             break;
 
                     }
@@ -76,41 +77,34 @@ namespace GalaxyWeb.Tools
                 string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
                 logger.LogError(method, e.Message, "Couldn't find service: ", _serviceName);
 
-                return TargetServiceState.NotFound;
+                return ServiceState.NotFound;
             }
         }
-
-        public ServiceHandler(ILogger<ServiceHandler> logger)
-        {            
-            this.logger = logger;
-            handlerIsValid = false;
-        }
-
+        
         // Overloaded method that takes both requested running-state and startup-type
-        public async Task ServiceControlAsync(TargetServiceState state, ServiceStartMode startupType)
+        public async Task ServiceControlAsync(ServiceState state, ServiceStartMode startupType)
         {
             if (!handlerIsValid) return;
             _processMode = state;
 
             switch (state)
             {
-                case TargetServiceState.StartService:
+                case ServiceState.StartService:
                     await StartServiceAsync(startupType);
                     break;
 
-                case TargetServiceState.StopService:
+                case ServiceState.StopService:
                     await StopServiceAsync();
                     break;
 
-                case TargetServiceState.RestartService:
+                case ServiceState.RestartService:
                     await RestartServiceAsync();
                     break;
             }
         }
-
-
+        
         // Overloaded method that takes only requested servicestate as parameter
-        public async Task ServiceControlAsync(TargetServiceState state)
+        public async Task ServiceControlAsync(ServiceState state)
         {
             if (!handlerIsValid) return;
             ServiceStartMode currentStartupType;
@@ -233,7 +227,5 @@ namespace GalaxyWeb.Tools
                 logger.LogError(method, e.Message, "Couldn't find service: ", _serviceName);
             }
         }
-
-      
     }
 }

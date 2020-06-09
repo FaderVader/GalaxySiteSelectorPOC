@@ -7,7 +7,7 @@ namespace GalaxyWeb.Tools
 {
     public class Enums
     {
-        public enum TargetServiceState
+        public enum ServiceState
         {
             StopService = 0,
             StartService = 1,
@@ -15,7 +15,7 @@ namespace GalaxyWeb.Tools
             NotFound = 99
         }
 
-        public enum TargetProcessState
+        public enum ProcessState
         {
             Stop = 0,
             Run = 1,

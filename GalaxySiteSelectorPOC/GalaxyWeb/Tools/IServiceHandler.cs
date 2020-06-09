@@ -8,13 +8,11 @@ namespace GalaxyWeb.Tools
     {
         string ServiceName { set;  get; }
 
-        //TargetServiceState ServiceState { get; }
+        Task<ServiceState> GetState();
 
-        Task<TargetServiceState> GetStatus();
+        Task ServiceControlAsync(ServiceState state, ServiceStartMode startupType);
 
-        Task ServiceControlAsync(TargetServiceState state, ServiceStartMode startupType);
-
-        Task ServiceControlAsync(TargetServiceState state);
+        Task ServiceControlAsync(ServiceState state);
 
         Task SetStartupTypeAsync(ServiceStartMode startUpType);
 
