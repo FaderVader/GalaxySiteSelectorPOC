@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+//using System.Collections.Generic;
+//using System.Linq;
 using System.Management;
-using System.Reflection;
+//using System.Reflection;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using static GalaxyWeb.Tools.Enums;
@@ -74,8 +74,8 @@ namespace GalaxyWeb.Tools
             }
             catch (Exception e)
             {
-                string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
-                logger.LogError(method, e.Message, "Couldn't find service: ", _serviceName);
+                //string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
+                logger.LogError("Couldn't find service: {serviceName} - {error}", _serviceName, e.Message);
 
                 return ServiceState.NotFound;
             }
@@ -140,15 +140,15 @@ namespace GalaxyWeb.Tools
                         outParams = await Task.Run(() => obj.InvokeMethod("ChangeStartMode", inParams, null));
 
                         string result = await Task.Run(() => obj.Properties["StartMode"].Value.ToString().Trim()); // this line just for verifying result of operation
-                        logger.LogInformation("Detected startUpType for service: " + name + ": " + result);
+                        logger.LogInformation("Detected startUpType for service: {name}: {result}", name, result);
                         return;
                     }
                 }
             }
             catch (Exception e)
             {
-                string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
-                logger.LogError(method, e.Message, "Couldn't set startUp mode for service: ", _serviceName + " " + startUpType.ToString());
+                //string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
+                logger.LogError("Couldn't set startUp mode for service: {serviceName} to {startUpType}. Error: {message}", _serviceName, startUpType.ToString(), e.Message); 
             }
         }
 
@@ -167,8 +167,8 @@ namespace GalaxyWeb.Tools
             }
             catch (Exception e)
             {
-                string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
-                logger.LogError(method, e.Message, "Couldn't find service: ", _serviceName);
+                //string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
+                logger.LogError("Couldn't find service: {serviceName}. Error: {message}", _serviceName, e.Message);
             }
         }
 
@@ -189,15 +189,15 @@ namespace GalaxyWeb.Tools
                             serviceController.Start();
                             serviceController.WaitForStatus(ServiceControllerStatus.Running);
                             ServiceControllerStatus message = serviceController.Status;
-                            logger.LogInformation("Service name and status: " + _serviceName + ": " + message);
+                            logger.LogInformation("Service name and status: {serviceName}: {message}", _serviceName, message);
                         });
                     }
                 }
             }
             catch (Exception e)
             {
-                string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
-                logger.LogError(method, e.Message, "Couldn't find service: ", _serviceName);
+                //string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
+                logger.LogError("Couldn't find service: {serviceName}. Error: {message}", _serviceName, e.Message);
             }
         }
 
@@ -217,14 +217,14 @@ namespace GalaxyWeb.Tools
                         });
 
                         var message = serviceController.Status;
-                        logger.LogInformation("Service name and status: " + _serviceName + " : " + message);
+                        logger.LogInformation("Service name and status: {serviceName}: {message}", _serviceName, message);
                     }
                 }
             }
             catch (Exception e)
             {
-                string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
-                logger.LogError(method, e.Message, "Couldn't find service: ", _serviceName);
+                //string method = MethodBase.GetCurrentMethod().ReflectedType.FullName + "." + MethodBase.GetCurrentMethod().Name;
+                logger.LogError("Couldn't find service: {serviceName}. Error: {message}", _serviceName, e.Message);
             }
         }
     }

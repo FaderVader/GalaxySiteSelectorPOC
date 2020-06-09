@@ -50,9 +50,8 @@
 
     private async Task GetServiceState()
     {
-        var state = await handler.GetStatus();
+        var state = await handler.GetState();
         ServiceState = state.ToString();
         this.StateHasChanged();
-
     }
 }
